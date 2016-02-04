@@ -1,0 +1,13 @@
+#controls {
+    margin: 0 auto;
+    display: table;
+}
+
+#controls button {
+  margin: 10px;
+}
+
+#imagemagick-submit {
+    margin: 0 auto;
+    display: table;
+}
