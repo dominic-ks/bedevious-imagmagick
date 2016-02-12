@@ -1,13 +1,14 @@
 #controls {
-    margin: 0 auto;
-    display: table;
+  margin: 0 auto;
+  display: table;
 }
 
 #controls button {
-  margin: 10px;
+  margin: 1%;
+  max-width: 18%;
 }
 
 #imagemagick-submit {
-    margin: 0 auto;
-    display: table;
+  margin: 0 auto;
+  display: table;
 }

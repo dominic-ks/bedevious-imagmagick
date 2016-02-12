@@ -12,98 +12,60 @@
  * Domain Path: TBC
  */
 
+/**
+*
+* Load all of the plugin files
+*
+**/
+
+include_once( 'lib/script-style-loader.php' );
+include_once( 'lib/front-end.php' );
+include_once( 'lib/ajax-handlers.php' );
+include_once( 'lib/class-bedev-image-magick.php' );
+include_once( 'lib/seo-overrides.php' );
+
 
 /**
 *
-* Include the required scrips and CSS for the Guillotine jQuery App
+* Add options into the DB
+*
+* Placeholder until admin options page is created
+*
+**/
+
+$options = array( 
+	'image-dimensions' => array( 'width' => 1200 , 'height' => 628 ), //the size of the montage image that is created, each half will be half the width
+	'montage-images' => array( 718 , 719 ), //the IDs of the two images to use in the montage
+	'montage-overlay' => 677, //the ID of the image that will be used as an overlay
+	'facebook-app' => '1516280175338077', //the ID of your Facebook app that will be used for posting
+	'front-end-path' => 'http://stage.bedevious.co.uk/imagemagick/', //the path to the page that you are using for the front end editor
+);
+
+update_option( 'bedev-imagick-options' , $options );
+
+
+/**
+*
+* Re-add ImageMagick Defauilt for WordPress
+*
+* Specifically to override default to GD by Force Regenerate Thumbnails and use bedev_image_magick to extend functionality
 *
 * @since 0.0.1
 *
 **/
 
-function bedev_include_guillotine() {
-	wp_enqueue_style( 'guillotine-css' , plugins_url() . '/bedev-imagemagick/apps/guillotine/css/jquery.guillotine.css' );
-	wp_enqueue_style( 'bedev-imagemagick-css' , plugins_url() . '/bedev-imagemagick/inc/css/bedev-imagemagick.css' );
-	wp_enqueue_script( 'guillotine-js', plugins_url() . '/bedev-imagemagick/apps/guillotine/js/jquery.guillotine.js' , array( 'jquery' ) , '1.0.0' , true  );
-	wp_enqueue_script( 'bedev-imagemagick-js', plugins_url() . '/bedev-imagemagick/inc/js/bedev-imagemagick.js' , array( 'jquery' , 'guillotine-js' ) , '0.0.1' , true  );
-	wp_enqueue_script( 'jquery-form', array( 'jquery' ) , false , true ); 
+function bedev_readd_imagemagick( $image_editors ) {
 	
-	$variables = array(
-		'url' => admin_url( 'admin-ajax.php' ),
-	);
+	$imagemagick_ref = 'WP_Image_Editor_Imagick';
 
-	wp_localize_script( 'guillotine-js' , 'ajax' , $variables );
-	
-}
-
-
-add_action( 'wp_enqueue_scripts', 'bedev_include_guillotine' );
-
-
-/**
-*
-* Shortcode to display Guillotine Image Editor
-*
-* @since 0.0.1
-*
-**/
-
-function bedev_show_guillotine() {
-  
-  ob_start(); ?>
-  
-  <div id="theparent" style="width: 100%;">
-    <img id="thepicture" src="http://bedevious.wmdstudios.netdna-cdn.com/wp-content/uploads/2015/12/web-background.jpg">
-    </div>
-      <div id='controls'>
-        <button id='rotate-left'  type='button' title='Rotate left'> &lt; </button>
-        <button id='zoom-out'     type='button' title='Zoom out'> - </button>
-        <button id='fit'          type='button' title='Fit image'> [ ]  </button>
-        <button id='zoom-in'      type='button' title='Zoom in'> + </button>
-        <button id='rotate-right' type='button' title='Rotate right'> &gt; </button>
-      </div>
-			<form role="form" id="bedev-image-magick-form" action="#" method="post"  enctype="multipart/form-data">
-				<input type="hidden" name="action" value="bedev_do_imagemagick"/>
-				<?php wp_nonce_field( 'bedev_do_imagemagick' , '_wp_nonce_bedev_imagemagick' , false , true ) ?>
-				<input type="submit" id='imagemagick-submit' title='imagemagick-submit'>
-			</form>
-
-  <?php
-  $html = ob_get_contents();
-	if( $html ) ob_end_clean();
-	return $html;
-  
-}
-
-add_shortcode( 'bedev_show_guillotine' , 'bedev_show_guillotine' );
-
-
-/**
-*
-* Handle the AJAX request containing image chop instructions
-*
-* @since 0.0.1
-*
-**/
-
-function bedev_do_imagemagick() {
-  
-	if ( 
-	! isset( $_POST['_wp_nonce_bedev_imagemagick'] ) 
-	|| ! wp_verify_nonce( $_POST['_wp_nonce_bedev_imagemagick'], 'bedev_do_imagemagick' ) 
-	) {
-
-		print 'Security error: either something has gone wrong, or you are being very naughty.';
-		exit;
-
-	} else {
-	
-		echo "What up son?";
-		die();
-		
+	if( !in_array( $imagemagick_ref , $image_editors ) ) {
+		array_unshift( $image_editors , $imagemagick_ref );
 	}
-  
-}
+	
+	$image_editors = array( 'bedev_image_magick', 'WP_Image_Editor_GD' );
 
-add_action( 'wp_ajax_bedev_do_imagemagick', 'bedev_do_imagemagick' );
-add_action( 'wp_ajax_nopriv_bedev_do_imagemagick', 'bedev_do_imagemagick' );
+	return $image_editors;
+
+	}
+
+add_filter( 'wp_image_editors', 'bedev_readd_imagemagick' , 20 );
