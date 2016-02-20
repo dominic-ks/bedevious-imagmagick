@@ -77,10 +77,14 @@ jQuery( document ).ready( function() {
 
 function imagemagickBefore() {
   
+  console.log( picture.guillotine('getData') );
+  
 }
 
   
 function imagemagickSuccess( responseText ) {
+  
+  console.log( responseText );
   
   response = JSON.parse( responseText );
   
