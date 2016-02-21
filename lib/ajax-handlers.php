@@ -12,13 +12,15 @@
 
 function bedev_do_imagemagick() {
   
-	if ( 
+	if (
 	! isset( $_POST['_wp_nonce_bedev_imagemagick'] ) 
 	|| ! wp_verify_nonce( $_POST['_wp_nonce_bedev_imagemagick'], 'bedev_do_imagemagick' ) 
 	) {
 
-		print 'Security error: either something has gone wrong, or you are being very naughty.';
-		exit;
+		$response = array( 
+			'status' => 'error',
+			'message' => 'Security error: either something has gone wrong, or you are being very naughty.',
+		);
 
 	} else {
 		
@@ -68,8 +70,11 @@ function bedev_do_imagemagick() {
 			$montage->compositeImage( $overlay_path , Imagick::COMPOSITE_DEFAULT , 0 , 0 );
 		}
 		
+		$path = wp_upload_dir();
+		$path = $path['path'];
+		
 		//save the result temporarily
-		$bedev_image_path = $master_image->generate_filename( 'montage' , wp_upload_dir() , 'jpg' );
+		$bedev_image_path = $master_image->generate_filename( 'montage' , $path , 'jpg' );
 		$montage->writeImage( $bedev_image_path );
 		
 		//process into WordPress
@@ -80,6 +85,7 @@ function bedev_do_imagemagick() {
 		}
 		
 		//store and process the image into WordPress
+		//NB it's expected that media_handle_sideload() will also delete the tmp file we save earlier
 		$file_array = array(
 			'tmp_name' => $bedev_image_path,
 			'name' => basename( $bedev_image_path ),
@@ -89,18 +95,20 @@ function bedev_do_imagemagick() {
 		);
 		$id = media_handle_sideload( $file_array , 0 );
 		
-		//delete the temp saved image
-		unlink( $bedev_image_path );
+		$unique_ref = time();
+		
+		//save a random identifier in the images meta data
+		update_post_meta( $id , 'share-identifier' , $unique_ref );
 		
 		$response = array(
 			'status' => 'success',
-			'montage' => $id
+			'montage' => $unique_ref,
 		);
 		
+	}
+
 		echo json_encode( $response );
 		die();
-		
-	}
   
 }
 

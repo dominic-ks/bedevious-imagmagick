@@ -16,7 +16,15 @@
 function bedev_replace_og_image( $content ) {
 	
 	if( isset( $_GET['bedev-share'] ) ) {
-		$image_url = wp_get_attachment_url( $_GET['bedev-share'] );
+		
+		$args = array( 
+			'post_type' => 'attachment',
+			'meta_value' => $_GET['bedev-share'],
+		);
+		
+		$image = get_posts( $args );
+		
+		$image_url = wp_get_attachment_url( $image[0]->ID );
 		return $image_url;
 	}
 	
