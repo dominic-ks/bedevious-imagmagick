@@ -17,7 +17,7 @@ function bedev_generate_fb_share( image_id ) {
 
   FB.ui({
     method: 'share',
-    href: ajax.path + '?bedev-share=' + image_id,
+    href: ajax.path + '?bedev-share-id=' + image_id,
   }, function( response ){ });
   
 }

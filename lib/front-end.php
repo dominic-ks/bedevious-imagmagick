@@ -27,11 +27,11 @@ function bedev_show_guillotine() {
 		<div id="theparent-<?php echo $key; ?>" class="bedev-image-parent" style="width: 48%; float: left;margin:2px;">
 			<img id="thepicture-<?php echo $key; ?>" class="bedev-image-picture" data-image-control="<?php echo $key; ?>" src="<?php echo $image_url; ?>">
 			<div id="controls">
-				<button id="rotateLeft-<?php echo $key; ?>" class="rotate-left" data-image-control="rotate-left-<?php echo $key; ?>" type='button' title='Rotate left'> &lt; </button>
-				<button id="zoomOut-<?php echo $key; ?>" class="zoom-out" data-image-control="zoom-out-<?php echo $key; ?>" type='button' title='Zoom out'> - </button>
-				<button id="fit-<?php echo $key; ?>" class="fit" data-image-control="fit-<?php echo $key; ?>" type='button' title='Fit image'> [ ]  </button>
-				<button id="zoomIn-<?php echo $key; ?>" class="zoom-in" data-image-control="zoom-in-<?php echo $key; ?>" type='button' title='Zoom in'> + </button>
-				<button id="rotateRight-<?php echo $key; ?>" class="rotate-right" data-image-control="rotate-right-<?php echo $key; ?>" type='button' title='Rotate right'> &gt; </button>
+				<button id="rotateLeft-<?php echo $key; ?>" class="rotate-left" data-image-control="rotate-left-<?php echo $key; ?>" type='button' title='Rotate left'><i class="fa fa-undo"></i></button>
+				<button id="zoomOut-<?php echo $key; ?>" class="zoom-out" data-image-control="zoom-out-<?php echo $key; ?>" type='button' title='Zoom out'><i class="fa fa-search-minus"></i></button>
+				<button id="fit-<?php echo $key; ?>" class="fit" data-image-control="fit-<?php echo $key; ?>" type='button' title='Fit image'><i class="fa fa-refresh"></i></button>
+				<button id="zoomIn-<?php echo $key; ?>" class="zoom-in" data-image-control="zoom-in-<?php echo $key; ?>" type='button' title='Zoom in'><i class="fa fa-search-plus"></i></button>
+				<button id="rotateRight-<?php echo $key; ?>" class="rotate-right" data-image-control="rotate-right-<?php echo $key; ?>" type='button' title='Rotate right'><i class="fa fa-repeat"></i></button>
 			</div>
 		</div>
 
