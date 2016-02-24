@@ -66,6 +66,7 @@ jQuery( document ).ready( function() {
     beforeSubmit: imagemagickBefore,
     success: imagemagickSuccess,
     data: imageData,
+    dataType: 'json',
   }; 
 
   // bind form using 'ajaxForm' 
@@ -79,6 +80,14 @@ function imagemagickBefore() {
   
   console.log( picture.guillotine('getData') );
   
+  //lock the height of the imagemagick container
+  currentHeight = jQuery( '#bedev-imagemagick-container' ).height();
+  jQuery( '#bedev-imagemagick-container' ).css( 'min-height' , currentHeight );
+  
+  jQuery( '#bedev-imagemagick-container' ).children().fadeOut( 400 , function() {
+    jQuery( '#bedev-imagemagick-loader' ).delay( 500 ).fadeIn( 400 );
+  });
+  
 }
 
   
@@ -86,10 +95,26 @@ function imagemagickSuccess( responseText ) {
   
   console.log( responseText );
   
-  response = JSON.parse( responseText );
+  response = responseText;
   
+  //only run if the response object states success
   if( response.status == 'success' ) {
-    bedev_generate_fb_share( response.montage );
+    
+    //create a new JS image object and load the src from the server
+    montageImage = new Image();
+    montageImage.src = response.src;
+    
+    //set up a function to load only once the image has been downloaded...
+    montageImage.onload = function() {
+      
+      jQuery( '#bedev-imagemagick-loader' ).delay( 500 ).fadeOut( 400 , function() {
+        jQuery( '#bedev-imagemagick-response' ).append( montageImage );
+        jQuery( '#bedev-imagemagick-response' ).append( response.buttons );
+        jQuery( '#bedev-imagemagick-response' ).fadeIn();
+      });
+      
+    }
+    
   }
   
 }

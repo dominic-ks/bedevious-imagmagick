@@ -37,6 +37,7 @@ $options = array(
 	'image-dimensions' => array( 'width' => 1200 , 'height' => 628 ), //the size of the montage image that is created, each half will be half the width
 	'montage-images' => array( 718 , 719 ), //the IDs of the two images to use in the montage
 	'montage-overlay' => 677, //the ID of the image that will be used as an overlay
+	'bedev_registered_social_sites' => array( 'facebook' ), //the sites that the admin wants to offer users to share images on
 	'facebook-app' => '1516280175338077', //the ID of your Facebook app that will be used for posting
 	'front-end-path' => 'http://stage.bedevious.co.uk/imagemagick/', //the path to the page that you are using for the front end editor
 );

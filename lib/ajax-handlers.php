@@ -100,9 +100,17 @@ function bedev_do_imagemagick() {
 		//save a random identifier in the images meta data
 		update_post_meta( $id , 'share-identifier' , $unique_ref );
 		
+		//get the image src
+		$image_src = wp_get_attachment_url( $id );
+		
+		//generate social share buttons that have been registered by the administrator
+		$social_buttons = bedev_get_social_share_button( $id );
+		
 		$response = array(
 			'status' => 'success',
 			'montage' => $unique_ref,
+			'src' => $image_src,
+			'buttons' => $social_buttons,
 		);
 		
 	}

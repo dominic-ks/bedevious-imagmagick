@@ -18,8 +18,15 @@ function bedev_show_guillotine() {
 	$overlay = $imagick_options['montage-overlay'];
 	
   ob_start(); 
+	
+	//create a wrapper for the ImageMagick elements
+	?>
+	<div id="bedev-imagemagick-container">
+		<img id="bedev-imagemagick-loader" alt="bedev-imagemagick-loader" src="<?php echo plugins_url() . '/bedev-imagemagick/inc/images/loading-gif-1.gif'; ?>" style="display:none;"/>
+		<div id="bedev-imagemagick-response" style="display:none;"></div>
+	<?php
 
-	foreach( $images as $key => $image ) { 
+	foreach( $images as $key => $image ) {
 
 		//create one image and button set per image
 		$image_url = wp_get_attachment_url( $image ); ?>
@@ -50,9 +57,10 @@ function bedev_show_guillotine() {
 			<?php wp_nonce_field( 'bedev_do_imagemagick' , '_wp_nonce_bedev_imagemagick' , false , true ) ?>
 			<input type="submit" id='imagemagick-submit' title='imagemagick-submit'>
 		</form>
-
-  <?php
 		
+	</div>
+		
+	<?php
   $html = ob_get_contents();
 	if( $html ) ob_end_clean();
 	return $html;
@@ -60,3 +68,90 @@ function bedev_show_guillotine() {
 }
 
 add_shortcode( 'bedev_show_guillotine' , 'bedev_show_guillotine' );
+
+
+/**
+*
+* Social share button generator
+*
+* This function generates HTML markup for social share buttons as requested
+*
+* @since 0.0.1
+*
+* param str $attachment_id the ID of the image that is to be shared
+* param str|arr $social_site the social site(s) that a button is requested for default 'all'
+* return str HTML markup for a social share button
+*
+**/
+
+function bedev_get_social_share_button( $attachment_id , $social_site = 'all' ) {
+	
+	if( $social_site == 'all' ) {
+		
+		$options = $imagick_options = get_option( 'bedev-imagick-options' );
+		$social_site = $options['bedev_registered_social_sites'];
+		
+	}
+	
+	if( is_array( $social_site ) ) {
+		
+		foreach( $social_site as $site ) {
+			
+			$html .= bedev_generate_social_share_html( $attachment_id , $site );
+			
+		}
+		
+	} elseif( is_string( $social_site ) ) {
+		
+		$html = bedev_generate_social_share_html( $attachment_id , $social_site );
+		
+	}
+	
+	return $html;
+	
+}
+
+
+/**
+*
+* Generate social share mark-up
+*
+* This function generates HTML markup for a requested social share button
+*
+* @since 0.0.1
+*
+* param str $attachment_id the ID of the image that is to be shared
+* param str $social_site the social site(s) that a button is requested for
+* return str HTML markup for a social share button
+*
+**/
+
+function bedev_generate_social_share_html( $attachment_id = null , $social_site = null ) {
+	
+	if( $attachment_id === null || $social_site === null ) {
+		return false;
+	}
+	
+	//get the unique image ref
+	$image_reference = get_post_meta( $attachment_id , 'share-identifier' , true );
+	
+	switch( $social_site ) {
+		
+		case 'facebook':
+			
+			ob_start();
+			
+				?><input type="submit" id='bedev-idimagick-facebook-share' class="bedev-idimagick-share" value="Share on Facebook" onClick="bedev_generate_fb_share(<?php echo $image_reference; ?>)"><?php
+			
+			$html = ob_get_contents();
+			if( $html ) ob_end_clean();
+			return $html;
+			
+		break;
+			
+		default:
+		return false;
+			
+	}
+	
+}
