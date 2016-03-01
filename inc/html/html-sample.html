@@ -1,0 +1,24 @@
+
+<!-- START IMAGE CONTAINER, IMAGE AND GUILLOTINE CONTROLS -->
+<div id="theparent-<?php echo $key; ?>" class="bedev-image-parent" style="width: 48%; float: left;margin:2px;">
+  <img id="thepicture-<?php echo $key; ?>" class="bedev-image-picture" data-image-control="ARBITRARY-ID" src="https://example.com/my-image.jpg">
+  <div id="controls">
+    <button id="rotateLeft-ARBITRARY-ID" class="rotate-left" data-image-control="rotate-left-ARBITRARY-ID" type='button' title='Rotate left'><i class="fa fa-undo"></i></button>
+    <button id="zoomOut-ARBITRARY-ID" class="zoom-out" data-image-control="zoom-out-ARBITRARY-ID" type='button' title='Zoom out'><i class="fa fa-search-minus"></i></button>
+    <button id="fit-ARBITRARY-ID" class="fit" data-image-control="fit-ARBITRARY-ID" type='button' title='Fit image'><i class="fa fa-refresh"></i></button>
+    <button id="zoomIn-ARBITRARY-ID" class="zoom-in" data-image-control="zoom-in-ARBITRARY-ID" type='button' title='Zoom in'><i class="fa fa-search-plus"></i></button>
+    <button id="rotateRight-ARBITRARY-ID" class="rotate-right" data-image-control="rotate-right-ARBITRARY-ID" type='button' title='Rotate right'><i class="fa fa-repeat"></i></button>
+  </div>
+</div>
+<!-- end IMAGE CONTAINER, IMAGE AND GUILLOTINE CONTROLS -->
+
+<!-- START MONTAGE GENERATOR SUBMISSION FORM -->
+<form role="form" id="bedev-image-magick-form" action="#" method="post"  enctype="multipart/form-data">
+  <input type="hidden" name="action" value="bedev_do_imagemagick"/>
+  <input type="hidden" name="attachment-ARBITRARY-ID" value="WORDPRESS-ATTACHMENT-POST-ID"/>
+  <input type="hidden" name="attachment-ARBITRARY-ID" value="WORDPRESS-ATTACHMENT-POST-ID"/>
+  <input type="hidden" name="number-images" value="NUMBER-OF-IMAGES>"/>
+  <input type="hidden" name="overlay" value="WORDPRESS-ATTACHMENT-POST-ID"/>
+  <input type="submit" id='imagemagick-submit' title='imagemagick-submit'>
+</form>
+<!-- END MONTAGE GENERATOR SUBMISSION FORM -->
