@@ -5,7 +5,7 @@ jQuery( document ).ready( function() {
   jQuery.getScript( '//connect.facebook.net/en_US/sdk.js' , function() {
     
     FB.init({
-      appId: 1516280175338077,
+      appId: facebook.appID,
       version: 'v2.5'
     });
     

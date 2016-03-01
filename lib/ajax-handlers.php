@@ -12,7 +12,7 @@
 
 function bedev_do_imagemagick() {
   
-	if (
+	/*if (
 	! isset( $_POST['_wp_nonce_bedev_imagemagick'] ) 
 	|| ! wp_verify_nonce( $_POST['_wp_nonce_bedev_imagemagick'], 'bedev_do_imagemagick' ) 
 	) {
@@ -22,13 +22,24 @@ function bedev_do_imagemagick() {
 			'message' => 'Security error: either something has gone wrong, or you are being very naughty.',
 		);
 
-	} else {
+	} else {*/
 		
-		//get the options
-		$imagick_options = get_option( 'bedev-imagick-options' );
+		//get the image class
+		$imagick_options = new bedev_imagemagick_options;
+		
+		//get the facebook details
+		//later to be replaced with an option sent in the ajax request
+		$imagic_details = $imagick_options->get_social_network_info( $_POST['network'] );
 		
 		//get the montage dimensions
-		$imagick_dimensions = $imagick_options['image-dimensions'];
+		$imagick_dimensions = $imagic_details['image_sizes'];
+	
+		//get the network's set overlay if there is one
+		if( isset( $imagic_details['montage-overlay'] ) ) {
+			$imagic_overlay = $imagic_details['montage-overlay'];
+		} else {
+			$imagic_overlay = false;
+		}
 		
 		//create and process all images received according to their received instructions
 		for( $x = 0; $x < $_POST['number-images']; $x++ ) {
@@ -43,10 +54,11 @@ function bedev_do_imagemagick() {
 			$bedev_new_image = $bedev_image_edit['image-' . $x]->translate_front_end_instructions( $_POST['image-' . $x] );
 
 			//process the image according to instructions
-			//rotate
+			
+			//1.rotate
 			$bedev_image_edit['image-' . $x]->rotate( 360 - $bedev_new_image['rotate'] );
 
-			//crop
+			//2. crop
 			$bedev_image_edit['image-' . $x]->crop( 
 				$bedev_new_image['x'],
 				$bedev_new_image['y'],
@@ -54,7 +66,7 @@ function bedev_do_imagemagick() {
 				$bedev_new_image['height']
 			);
 
-			//resize it to the required size, N.B. image will be enlarged if required
+			//3. resize it to the required size, N.B. image will be enlarged if required
 			$resize = $bedev_image_edit['image-' . $x]->resizeImage( $imagick_dimensions['width'] / 2 , $imagick_dimensions['height'] , true );
 			
 		}
@@ -62,12 +74,15 @@ function bedev_do_imagemagick() {
 		//create the montage
 		$master_image = $bedev_image_edit['image-0'];
 		$additional_image = $bedev_image_edit['image-1'];
-		$montage = $master_image->montage( $additional_image );
+		$montage = $master_image->montage( $additional_image , $imagick_dimensions );
 		
 		//add the overlay if there is one
-		if( isset( $_POST['overlay'] ) ) {
-			$overlay_path = new Imagick ( get_attached_file( $_POST['overlay'] ) );
-			$montage->compositeImage( $overlay_path , Imagick::COMPOSITE_DEFAULT , 0 , 0 );
+		if( $imagic_overlay ) {
+			$overlay_path = get_attached_file( $imagic_overlay );
+			$overlay_bedev_object = wp_get_image_editor( $overlay_path );
+			$overlay_bedev_object->resizeImage( $imagick_dimensions['width'] , $imagick_dimensions['height'] , true );
+			$overlay_object = $overlay_bedev_object->get_imagick();
+			$montage->compositeImage( $overlay_object , Imagick::COMPOSITE_DEFAULT , 0 , 0 );
 		}
 		
 		$path = wp_upload_dir();
@@ -111,9 +126,17 @@ function bedev_do_imagemagick() {
 			'montage' => $unique_ref,
 			'src' => $image_src,
 			'buttons' => $social_buttons,
+			'debug' => array(
+				'overlay_path' => $overlay_path,
+				'upload_dir' => $path,
+				'tmp_path' => $bedev_image_path,
+				'sideload_result' => $id,
+				'image_path' => $image_path_1,
+				'request' => $_POST,
+			),
 		);
 		
-	}
+	//}
 
 		echo json_encode( $response );
 		die();

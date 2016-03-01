@@ -26,6 +26,7 @@ function bedev_replace_og_image( $content ) {
 		
 		$image_url = wp_get_attachment_url( $image[0]->ID );
 		return $image_url;
+		
 	}
 	
 	return $content;
@@ -33,6 +34,7 @@ function bedev_replace_og_image( $content ) {
 }
 
 add_filter( 'wpseo_og_og_image' , 'bedev_replace_og_image' );
+add_filter( 'wpseo_twitter_image' , 'bedev_replace_og_image' );
 
 
 /**
@@ -52,11 +54,11 @@ function bedev_replace_canonical( $url ) {
 	
 	if( isset( $_GET['bedev-share-id'] ) ) {
 		
-		//get the options
-		$imagick_options = get_option( 'bedev-imagick-options' );
+		//get the image class
+		$imagick_options = new bedev_imagemagick_options;
 		
-		//get the path to share
-		$path = $imagick_options['front-end-path'];
+		//get the front end path
+		$path = $imagick_options->front_end_path;
 		
 		return $path . '?bedev-share-id=' . $_GET['bedev-share-id'];
 		
@@ -84,17 +86,20 @@ function bedev_add_og_image_atts() {
 	
 	if( isset( $_GET['bedev-share-id'] ) ) {
 		
-		//get the options
-		$imagick_options = get_option( 'bedev-imagick-options' );
+		//get the image class
+		$imagick_options = new bedev_imagemagick_options;
+		
+		//get the facebook details
+		//later to be replaced with an option sent in the ajax request
+		$imagic_details = $imagick_options->get_social_network_info( 'facebook' );
 		
 		//get the montage dimensions
-		$imagick_dimensions = $imagick_options['image-dimensions'];
+		$imagick_dimensions = $imagic_details['image_sizes'];
 
 		ob_start(); ?>
 
 		<meta property="og:image:width" content="<?php echo $imagick_dimensions['width'] ?>">
 		<meta property="og:image:height" content="<?php echo $imagick_dimensions['height'] ?>">
-		<meta property="og:description" content="Be Devious and generate your own before and after and see how you can use the Be Devious ImageMagick plugin on your own website.">
 
 		<?php
 		$html = ob_get_contents();
@@ -106,3 +111,37 @@ function bedev_add_og_image_atts() {
 }
 
 add_action( 'wpseo_opengraph' , 'bedev_add_og_image_atts' );
+
+
+/**
+*
+* Edit the description added by Yoast SEO
+*
+* NB. this is hooked to 'wpseo_opengraph' action from Yoast WPSEO
+*
+* @since 0.0.1
+*
+**/
+
+function bedev_edit_description_description( $description ) {
+	
+	if( isset( $_GET['bedev-share-id'] ) ) {
+		
+		//get the image class
+		$imagick_options = new bedev_imagemagick_options;
+		
+		//get the facebook details
+		//later to be replaced with an option sent in the ajax request
+		$imagic_details = $imagick_options->get_social_network_info( 'facebook' );
+		
+		//get the link share description
+		$imagick_description = $imagick_options->link_description;
+		
+		return $imagick_description;
+		
+	}
+	
+}
+
+add_filter( 'wpseo_opengraph_desc' , 'bedev_edit_description_description' );
+add_filter( 'wpseo_twitter_description' , 'bedev_edit_description_description' );

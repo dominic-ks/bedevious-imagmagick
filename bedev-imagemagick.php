@@ -21,7 +21,8 @@
 include_once( 'lib/script-style-loader.php' );
 include_once( 'lib/front-end.php' );
 include_once( 'lib/ajax-handlers.php' );
-include_once( 'lib/class-bedev-image-magick.php' );
+include_once( 'lib/class-bedev-imagemagick.php' );
+include_once( 'lib/class-bedev-imagemagick-options.php' );
 include_once( 'lib/seo-overrides.php' );
 
 
@@ -33,16 +34,22 @@ include_once( 'lib/seo-overrides.php' );
 *
 **/
 
-$options = array( 
-	'image-dimensions' => array( 'width' => 1200 , 'height' => 628 ), //the size of the montage image that is created, each half will be half the width
-	'montage-images' => array( 718 , 719 ), //the IDs of the two images to use in the montage
-	'montage-overlay' => 677, //the ID of the image that will be used as an overlay
-	'bedev_registered_social_sites' => array( 'facebook' ), //the sites that the admin wants to offer users to share images on
-	'facebook-app' => '1516280175338077', //the ID of your Facebook app that will be used for posting
-	'front-end-path' => 'http://stage.bedevious.co.uk/imagemagick/', //the path to the page that you are using for the front end editor
+$bedev_registered_soical_sites = array(
+	'facebook' => array(
+		'app_id' => '1516280175338077',
+		'montage-overlay' => 6126,
+		'image-dimensions' => array( 'width' => 1200 , 'height' => 628 ), 
+	),
 );
 
-update_option( 'bedev-imagick-options' , $options );
+$options = array(
+	'montage-images' => array( 718 , 719 ), //the IDs of the two images to use in the montage
+	'front-end-path' => 'https://stage.bedevious.co.uk/pilatespt/imagick-tester/', //the path to the page that you are using for the front end editor
+	'description' => 'Be Devious and generate your own before and after and see how you can use the Be Devious ImageMagick plugin on your own website.', //the description to use when sharing a link
+	'bedev_registered_social_sites' => $bedev_registered_soical_sites, //the sites that the admin wants to offer users to share images on
+);
+
+update_option( 'bedev-imagemagick-options' , $options );
 
 
 /**

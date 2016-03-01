@@ -18,13 +18,17 @@ function bedev_include_files() {
 	wp_enqueue_script( 'bedev-facebook-share', plugins_url() . '/bedev-imagemagick/inc/js/facebook-share.js' , array( 'jquery' ) , '0.0.1' , true  );
 	
 	//get the options
-	$imagick_options = get_option( 'bedev-imagick-options' );
+	$imagick_options = new bedev_imagemagick_options;
+	
+	//get the facebook details
+	//later to be replaced with an option sent in the ajax request
+	$imagic_details = $imagick_options->get_social_network_info( 'facebook' );
 
 	//get the montage dimensions
-	$imagick_dimensions = $imagick_options['image-dimensions'];
+	$imagick_dimensions = $imagic_details['image_sizes'];
 	
 	//get the front end path for the image editor
-	$path = $imagick_options['front-end-path'];
+	$path = $imagick_options->options['front-end-path'];
 	
 	$variables = array(
 		'url' => admin_url( 'admin-ajax.php' ),
@@ -32,8 +36,16 @@ function bedev_include_files() {
 		'image_height' => $imagick_dimensions['height'],
 		'path' => $path,
 	);
-
 	wp_localize_script( 'guillotine-js' , 'ajax' , $variables );
+	
+	//get the facebook app ID
+	$facebook_app_id = $imagic_details['app_id'];
+	
+	$facebook_variables = array(
+		'appID' => $facebook_app_id,
+	);
+	wp_localize_script( 'bedev-facebook-share' , 'facebook' , $facebook_variables );
+	
 	
 }
 
