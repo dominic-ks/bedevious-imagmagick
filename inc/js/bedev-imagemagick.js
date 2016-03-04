@@ -1,14 +1,16 @@
 var imageData = Object();
 var imageFiles = Object();
 
-function activateGuillotine( socialSite ) {
+function activateGuillotine( socialSite , containerID ) {
+  
+  uniqueID = '#bedev-imagemagick-outer-' + containerID;
   
   //lock the height of the imagemagick container
-  currentHeight = jQuery( '#bedev-imagemagick-container' ).height();
-  jQuery( '#bedev-imagemagick-container' ).css( 'min-height' , currentHeight );
+  currentHeight = jQuery( uniqueID + ' #bedev-imagemagick-container' ).height();
+  jQuery( uniqueID + ' #bedev-imagemagick-container' ).css( 'min-height' , currentHeight );
   
-  jQuery( '#bedev-imagemagick-container' ).children().fadeOut( 400 , function() {
-    jQuery( '#bedev-imagemagick-loader' ).delay( 500 ).fadeIn( 400 ).promise().done( function() {
+  jQuery( uniqueID + ' #bedev-imagemagick-container' ).children().fadeOut( 400 , function() {
+    jQuery( uniqueID + ' #bedev-imagemagick-loader' ).delay( 500 ).fadeIn( 400 ).promise().done( function() {
       
       var availableActions = {
         0: 'rotateLeft',
@@ -26,7 +28,7 @@ function activateGuillotine( socialSite ) {
       }
 
       //prepare the images
-      pictures = jQuery( '.bedev-image-picture' );
+      pictures = jQuery( uniqueID + ' .bedev-image-picture' );
 
       jQuery.each( pictures , function( value ) {
         
@@ -44,6 +46,7 @@ function activateGuillotine( socialSite ) {
         newImg.setAttribute( 'data-image-control' , x );
         newImg.setAttribute( 'data-image-id' , jQuery( image ).attr( 'data-image-id' )  );
         newImg.imageHold = image;
+        newImg.uniqueID = uniqueID; 
         
         //ID the starting dimensions
         guillotineWidth = ajax[socialSite].image_sizes.width / 2;
@@ -61,7 +64,7 @@ function activateGuillotine( socialSite ) {
         var y = 0;
         controls += '<div class="controls">';
         while( availableActions[ y ] ) {
-          controls += '<button id="' + availableActions[y] + '-' + x + '" class="bedev-guillotine-button btn-danger" data-image-control="' + x + '" data-image-action="' + availableActions[y] + '" type="button" title="Rotate left"><i class="fa ' + actionSymbols[ availableActions[y]  ] + '"></i></button>';
+          controls += '<button id="' + availableActions[y] + '-' + x + '" class="bedev-guillotine-button btn-danger" data-image-control="' + x + '" data-image-action="' + availableActions[y] + '" data-unique-id="' + uniqueID + '" type="button" title="Rotate left"><i class="fa ' + actionSymbols[ availableActions[y]  ] + '"></i></button>';
           y = y + 1;
         }
         controls += '</div>';
@@ -76,7 +79,7 @@ function activateGuillotine( socialSite ) {
 
           //get the picture number
           number = jQuery( this.imageHold ).attr( 'data-image-control' );
-          picture = jQuery( '#thepicture-' + number );
+          picture = jQuery( this.uniqueID + ' #thepicture-' + number );
 
           //initiate the guillotine plugin
           picture.guillotine( { width: guillotineWidth , height: guillotineHeight } );
@@ -87,10 +90,11 @@ function activateGuillotine( socialSite ) {
           var y = 0;
           while( availableActions[ y ] ) {
 
-            jQuery( '#' + availableActions[ y ] + '-' + number ).click( function() {
+            jQuery( this.uniqueID + ' #' + availableActions[ y ] + '-' + number ).click( function() {
               action = jQuery( this ).attr( 'data-image-action' );
               number = jQuery( this ).attr( 'data-image-control' );
-              jQuery( '#thepicture-' + number ).guillotine( action );
+              uniqueID = jQuery( this ).attr( 'data-unique-id' );
+              jQuery( uniqueID + ' #thepicture-' + number ).guillotine( action );
             });
 
             y = y + 1;
@@ -108,7 +112,7 @@ function activateGuillotine( socialSite ) {
       montageForm += '<form role="form" id="bedev-image-magick-form" action="#" method="post"  enctype="multipart/form-data">';
       montageForm += '<input type="hidden" name="action" value="bedev_do_imagemagick"/>';
 
-      pictures = jQuery( '.bedev-image-picture-guillotine' );
+      pictures = jQuery( uniqueID + ' .bedev-image-picture-guillotine' );
       jQuery.each( pictures , function( value ) {
         arbID = jQuery( pictures [ value ] ).attr( 'data-image-control' );
         wpID = jQuery( pictures [ value ] ).attr( 'data-image-id' );
@@ -121,10 +125,11 @@ function activateGuillotine( socialSite ) {
       montageForm += '</form>';
 
       //add the montage submission form
-      jQuery( '#bedev-available-actions' ).html( montageForm );
+      jQuery( uniqueID + ' #bedev-available-actions' ).html( montageForm );
 
       //bind it's actions
       var options = {
+        uniqueID : uniqueID,
         url: ajax.url,
         beforeSubmit: imagemagickBefore,
         success: imagemagickSuccess,
@@ -133,34 +138,30 @@ function activateGuillotine( socialSite ) {
       }; 
 
       // bind form using 'ajaxForm' 
-      jQuery( '#bedev-image-magick-form' ).ajaxForm( options );
+      jQuery( uniqueID + ' #bedev-image-magick-form' ).ajaxForm( options );
   
-      jQuery( '#bedev-imagemagick-loader' ).fadeOut( 400 , function() {
+      jQuery( uniqueID + ' #bedev-imagemagick-loader' ).fadeOut( 400 , function() {
         
         //manage the height of the window
-        windowHeight = jQuery( window ).height() * 0.8;
-        console.log( 'window: ' + windowHeight );
+       windowHeight = jQuery( window ).height() * 0.8;
         
         //use the smaller of the guillotine dimensions and the current width of the container
-        currentWidth = jQuery( '#bedev-imagemagick-outer' ).width();
+        currentWidth = jQuery( uniqueID ).width();
         if( guillotineWidth * 2 > currentWidth ) { widthToUse = currentWidth } else { widthToUse = guillotineWidth * 2 }
-        console.log( 'width to use: ' + widthToUse );
         
-        //check the height using the estimated current height of the elemtn
+        //check the height using the estimated current height of the element
         //NB. if widthToUse = guillotineWidth, then heightToCheck will = guillotineHeight
         heightToCheck = guillotineHeight * ( guillotineWidth * 2 / widthToUse );
-        console.log( 'height to check: ' + heightToCheck );
         
         jQuery.each( imageFiles , function( imageFile ) {
           if( heightToCheck > windowHeight ) {
             maxWidth = widthToUse * 2 / ( guillotineHeight / windowHeight );
-            console.log( 'max width: ' + maxWidth );
-            jQuery( '#bedev-imagemagick-container' ).css( 'max-width' , maxWidth + 'px' );
-            jQuery( '#bedev-imagemagick-container' ).children().css( 'max-width' , ( maxWidth * 0.6 ) + 'px' );
+            jQuery( uniqueID + ' #bedev-imagemagick-container' ).css( 'max-width' , maxWidth + 'px' );
+            jQuery( uniqueID + ' #bedev-imagemagick-container' ).children().css( 'max-width' , ( maxWidth * 0.6 ) + 'px' );
           } 
         });
         
-        jQuery( '#bedev-imagemagick-container' ).delay( 500 ).children().fadeIn( 400 );
+        jQuery( uniqueID + ' #bedev-imagemagick-container' ).delay( 500 ).children().fadeIn( 400 );
         
       });
       
@@ -176,12 +177,12 @@ function imagemagickBefore() {
   console.log( imageData );
   
   //lock the height of the imagemagick container
-  currentHeight = jQuery( '#bedev-imagemagick-container' ).height();
-  jQuery( '#bedev-imagemagick-container' ).css( 'min-height' , currentHeight );
+  currentHeight = jQuery( this.uniqueID + ' #bedev-imagemagick-container' ).height();
+  jQuery( this.uniqueID + ' #bedev-imagemagick-container' ).css( 'min-height' , currentHeight );
   
-  jQuery( '#bedev-imagemagick-container' ).children().fadeOut( 400 , function() {
-    jQuery( '#bedev-imagemagick-loader' ).delay( 500 ).fadeIn( 400 );
-  });
+  jQuery( this.uniqueID + ' #bedev-imagemagick-container' ).children().fadeOut( 400 );
+  jQuery( this.uniqueID + ' #bedev-imagemagick-loader' ).delay( 450 ).fadeIn( 400 );
+  
   
 }
 
@@ -198,20 +199,20 @@ function imagemagickSuccess( responseText ) {
     //create a new JS image object and load the src from the server
     montageImage = new Image();
     montageImage.src = response.src;
+    montageImage.uniqueID = uniqueID;
     
     //set up a function to load only once the image has been downloaded...
     montageImage.onload = function() {
       
-      jQuery( '#bedev-imagemagick-loader' ).delay( 500 ).fadeOut( 400 , function() {
-        jQuery( '#bedev-imagemagick-response' ).append( montageImage );
-        jQuery( '#bedev-imagemagick-response' ).append( response.buttons );
+      jQuery( this.uniqueID + ' #bedev-imagemagick-loader' ).delay( 400 ).fadeOut( 400 );
+      jQuery( this.uniqueID + ' #bedev-imagemagick-response' ).append( montageImage );
+      jQuery( this.uniqueID + ' #bedev-imagemagick-response' ).append( response.buttons );
         
-        if( jQuery( window ).width() < 380 ) {
-          jQuery( '#bedev-imagemagick-response' ).css( 'max-width' , '100%' );
-        }
-        
-        jQuery( '#bedev-imagemagick-response' ).fadeIn();
-      });
+      if( jQuery( window ).width() < 380 ) {
+        jQuery( this.uniqueID + ' #bedev-imagemagick-response' ).css( 'max-width' , '100%' );
+      }
+
+      jQuery( this.uniqueID + ' #bedev-imagemagick-response' ).delay( 1000 ).fadeIn();
       
     }
     

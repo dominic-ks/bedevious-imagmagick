@@ -19,13 +19,13 @@ jQuery( document ).ready( function() {
   
 });
 
-function bedev_generate_twitter_share( image_id ) {
+function bedev_generate_twitter_share( image_id , uniqueID ) {
   
   var shareText = encodeURIComponent( ajax.description );
   var shareLink = encodeURIComponent( ajax.path + '?bedev-share-id=' + image_id );
   var twitterLink = 'https://twitter.com/intent/tweet?text=' + shareText + '&url=' + shareLink;
   var linkElement = '<a id="bedev-twitter-link" class="bedev-imagick-share btn btn-danger" href="' + twitterLink + '">Share on twitter</a>';
   
-  jQuery( '#bedev-available-actions' ).html( linkElement );
+  jQuery( '#' + uniqueID ).parent( '#bedev-available-actions' ).html( linkElement );
   
 }

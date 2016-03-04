@@ -54,8 +54,8 @@ $bedev_registered_soical_sites = array(
 
 $options = array(
 	'montage-images' => array( 718 , 719 ), //the IDs of the two images to use in the montage
-	'front-end-path' => 'https://stage.bedevious.co.uk/pilatespt/imagick-tester/', //the path to the page that you are using for the front end editor
-	'description' => 'Be Devious and generate your own before and after and see how to use the Be Devious ImageMagick plugin on your site.', //the description to use when sharing a link
+	'front-end-path' => 'https://stage.bedevious.co.uk/pilatespt/try-the-model-method-for-free/', //the path to the page that you are using for the front end editor
+	'description' => 'Try The Model Method Online for free and get two exclusive workouts and sample recipes!', //the description to use when sharing a link
 	'bedev_registered_social_sites' => $bedev_registered_soical_sites, //the sites that the admin wants to offer users to share images on
 );
 

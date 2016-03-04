@@ -32,7 +32,7 @@ function bedev_show_guillotine( $args = null ) {
 		//check if an array of image IDs has been provided in $args, if so, use it
 		if( is_array( $args['images'] ) ) {
 			
-			if( count( $args['images'] !== 2 ) ) { return 'Please provide 2 image IDs if providing an array.'; }
+			//if( count( $args['images'] !== 2 ) ) { return 'Please provide 2 image IDs if providing an array. You have provided ' . count( $args['images'] ); }
 			$images = $args['images'];
 			
 		//else if a string has been provided, check if it's appropriate to convert to an array
@@ -48,9 +48,11 @@ function bedev_show_guillotine( $args = null ) {
 	
   ob_start(); 
 	
+	$unique_ref = uniqid();
+	
 	//create a wrapper for the ImageMagick elements
 	?>
-	<div id="bedev-imagemagick-outer">
+	<div id="bedev-imagemagick-outer-<?php echo $unique_ref; ?>" class="bedev-imagemagick-outer">
 		<img id="bedev-imagemagick-loader" alt="bedev-imagemagick-loader" src="<?php echo plugins_url() . '/bedev-imagemagick/inc/images/loading-gif-1.gif'; ?>" style="display:none;"/>
 		<div id="bedev-imagemagick-container">
 			<div id="bedev-imagemagick-response" style="display:none;"></div>
@@ -75,7 +77,7 @@ function bedev_show_guillotine( $args = null ) {
 
 				foreach( $all_social_sites as $site => $all_social_site ) { ?>
 
-					<button class="button bedev-imagick-share btn btn-danger" onClick="activateGuillotine( '<?php echo $site; ?>' )">Share on <?php echo $site; ?></button>
+					<button class="button bedev-imagick-share btn btn-danger" onClick="activateGuillotine( '<?php echo $site; ?>' , '<?php echo $unique_ref; ?>' )">Share on <?php echo $site; ?></button>
 
 				<?php } ?>
 
@@ -168,13 +170,15 @@ function bedev_generate_social_share_html( $attachment_id = null , $social_site 
 					
 				case 'twitter':
 					?>
-						<script>bedev_generate_twitter_share(<?php echo $image_reference; ?>)</script>
+						<script id="<?php echo $image_reference; ?>">bedev_generate_twitter_share( <?php echo $image_reference; ?> , <?php echo $image_reference; ?> )</script>
 					<?php
 					break;
 					
 				case 'instagram':
 					?>
-						<script>bedev_generate_instagram_share(<?php echo $image_reference; ?>)</script>
+						<script id="<?php echo $image_reference; ?>">
+							bedev_generate_instagram_share( <?php echo $image_reference; ?> , <?php echo $image_reference; ?> );
+						</script>
 					<?php
 					break;
 					
