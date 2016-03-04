@@ -27,8 +27,7 @@ function bedev_do_imagemagick() {
 		//get the image class
 		$imagick_options = new bedev_imagemagick_options;
 		
-		//get the facebook details
-		//later to be replaced with an option sent in the ajax request
+		//get the social network details
 		$imagic_details = $imagick_options->get_social_network_info( $_POST['network'] );
 		
 		//get the montage dimensions
@@ -119,7 +118,7 @@ function bedev_do_imagemagick() {
 		$image_src = wp_get_attachment_url( $id );
 		
 		//generate social share buttons that have been registered by the administrator
-		$social_buttons = bedev_get_social_share_button( $id );
+		$social_buttons = bedev_get_social_share_button( $id , $_POST['network'] );
 		
 		$response = array(
 			'status' => 'success',

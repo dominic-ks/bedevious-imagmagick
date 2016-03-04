@@ -40,12 +40,22 @@ $bedev_registered_soical_sites = array(
 		'montage-overlay' => 6126,
 		'image-dimensions' => array( 'width' => 1200 , 'height' => 628 ), 
 	),
+	'twitter' => array(
+		'app_id' => 'N/A',
+		'montage-overlay' => 6148,
+		'image-dimensions' => array( 'width' => 1024 , 'height' => 512 ), 
+	),
+	'instagram' => array(
+		'app_id' => 'N/A',
+		'montage-overlay' => 6146,
+		'image-dimensions' => array( 'width' => 1080 , 'height' => 1080 ), 
+	),
 );
 
 $options = array(
 	'montage-images' => array( 718 , 719 ), //the IDs of the two images to use in the montage
 	'front-end-path' => 'https://stage.bedevious.co.uk/pilatespt/imagick-tester/', //the path to the page that you are using for the front end editor
-	'description' => 'Be Devious and generate your own before and after and see how you can use the Be Devious ImageMagick plugin on your own website.', //the description to use when sharing a link
+	'description' => 'Be Devious and generate your own before and after and see how to use the Be Devious ImageMagick plugin on your site.', //the description to use when sharing a link
 	'bedev_registered_social_sites' => $bedev_registered_soical_sites, //the sites that the admin wants to offer users to share images on
 );
 

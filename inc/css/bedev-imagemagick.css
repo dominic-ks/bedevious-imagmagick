@@ -1,33 +1,103 @@
- {
-  margin: 0 auto;
-  display: table;
+#bedev-imagemagick-outer {
+    display: -webkit-flex;
+    display: flex;
+     -webkit-justify-content: center;
+    justify-content: center;
 }
 
-#controls button {
-  margin: 1%;
-  max-width: 18%;
+#bedev-imagemagick-loader {
+    margin: auto;
 }
 
-.bedev-imagick-share,
-.btn.bedev-imagick-share,
-#imagemagick-submit,
-#bedev-imagemagick-loader,
-#controls {
-  margin: 0 auto;
-  display: table;
-  text-align: center;
+#bedev-imagemagick-container {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-justify-content: center;
+    justify-content: center;
 }
 
-#bedev-imagemagick-container .btn {
-  width: auto;
-  min-width: 18%;
+#bedev-image-container {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    -webkit-align-content: center;
+    align-content: center;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
 }
 
-#bedev-imagemagick-container .fa {
-  display: table;
-  margin: 0 auto;
+#bedev-image-container img {
+  width: 100%;
+}
+
+.bedev-image-parent {
+    width: 50%;
+    margin: 1%;
+}
+
+#bedev-available-actions {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    -webkit-justify-content: center;
+    justify-content: center;
+    width: 100%;
+    margin: auto;
+    margin-top: 10px;
 }
 
 .bedev-imagick-share {
-  margin-top: 10px;
+    margin: 2px;
+}
+
+.controls {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-justify-content: center;
+    justify-content: center;
+}
+
+.bedev-guillotine-button {
+    margin: 2px;
+    width: 30%;
+}
+
+.bedev-guillotine-button.btn-danger i {
+  margin: 0;
+}
+
+@media( max-width: 380px ) {
+  
+  #bedev-image-container {
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+  }
+  
+  .bedev-image-parent {
+      width: 100%;
+  }
+  
+  #bedev-available-actions {
+      -webkit-flex-wrap: wrap;
+      flex-wrap: wrap;
+  }
+  
+  .bedev-imagick-share,
+  #bedev-image-magick-form, 
+  #imagemagick-submit {
+    width: 100%;
+  }
+  
+  .bedev-guillotine-button {
+    padding: 15px;
+  }
+  
 }

@@ -21,8 +21,10 @@ class bedev_imagemagick_options {
     //load Facebook details
     $this->registered_sites = $this->options['bedev_registered_social_sites'];
     
-    //load Facebook details
-    $this->facebook_options = $this->registered_sites['facebook'];
+    //load social details
+    foreach( $this->registered_sites as $site => $registered_site ) {
+      $this->$site = $this->registered_sites[ $site ];
+    }
     
     //get the front-end path
     $this->front_end_path = $this->options['front-end-path'];
@@ -45,17 +47,8 @@ class bedev_imagemagick_options {
   **/
   
   public function get_social_network_info( $social_site ) {
-    
-    switch( $social_site ) {
         
-      case 'facebook':
-        $social_array = $this->facebook_options;
-        break;
-
-      default:
-      return false;
-        
-    }
+    $social_array = $this->$social_site;
     
     $social_details = array(
       'app_id' => $social_array['app_id'],

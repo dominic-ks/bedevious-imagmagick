@@ -18,9 +18,9 @@ function bedev_show_guillotine( $args = null ) {
 	//get the options
 	$imagick_options = new bedev_imagemagick_options;
 	
-	//get the facebook details
+	//get all the social network details
 	//later to be replaced with an option sent in the ajax request
-	$imagic_details = $imagick_options->get_social_network_info( 'facebook' );
+	$all_social_sites = $imagick_options->registered_sites;	
 	
 	//load the images
 	
@@ -44,38 +44,43 @@ function bedev_show_guillotine( $args = null ) {
 			
 		}
 		
-	}
-	
-	//load the overlay IDs
-	if( !isset( $args['overlay'] ) ) {
-		$overlay = $imagic_details['montage-overlay'];
-	} else {
-		$overlay = $args['overlay'];
-	}
-	
+	}	
 	
   ob_start(); 
 	
 	//create a wrapper for the ImageMagick elements
 	?>
-	<img id="bedev-imagemagick-loader" alt="bedev-imagemagick-loader" src="<?php echo plugins_url() . '/bedev-imagemagick/inc/images/loading-gif-1.gif'; ?>" style="display:none;"/>
-	<div id="bedev-imagemagick-container">
-		<div id="bedev-imagemagick-response" style="display:none;"></div>
-		<?php
+	<div id="bedev-imagemagick-outer">
+		<img id="bedev-imagemagick-loader" alt="bedev-imagemagick-loader" src="<?php echo plugins_url() . '/bedev-imagemagick/inc/images/loading-gif-1.gif'; ?>" style="display:none;"/>
+		<div id="bedev-imagemagick-container">
+			<div id="bedev-imagemagick-response" style="display:none;"></div>
+			<div id="bedev-image-container">
+			<?php
 
-	foreach( $images as $key => $image ) {
+		foreach( $images as $key => $image ) {
 
-		//create one image and button set per image
-		$image_url = wp_get_attachment_url( $image ); ?>
+			//create one image and button set per image
+			$image_url = wp_get_attachment_url( $image ); ?>
 
-		<div id="theparent-<?php echo $key; ?>" class="bedev-image-parent" style="width: 48%; float: left;margin:2px;">
-			<img id="thepicture-<?php echo $key; ?>" class="bedev-image-picture" data-image-control="<?php echo $key; ?>" data-image-id ="<?php echo $image; ?>" src="<?php echo $image_url; ?>">
-		</div>
+			<div id="theparent-<?php echo $key; ?>" class="bedev-image-parent">
+				<img id="thepicture-<?php echo $key; ?>" class="bedev-image-picture" data-image-control="<?php echo $key; ?>" data-image-id ="<?php echo $image; ?>" src="<?php echo $image_url; ?>">
+			</div>
 
-		<?php } ?>
-		
-		<div id="bedev-available-actions" style="clear:both;padding:10px;">
-			<button class="button bedev-imagick-share btn btn-danger" id="facebook-guillotine"onClick="activateGuillotine( 'facebook' )">Share on Facebook</button>
+			<?php } ?>
+
+			</div>
+			<div id="bedev-available-actions">
+
+				<?php
+
+				foreach( $all_social_sites as $site => $all_social_site ) { ?>
+
+					<button class="button bedev-imagick-share btn btn-danger" onClick="activateGuillotine( '<?php echo $site; ?>' )">Share on <?php echo $site; ?></button>
+
+				<?php } ?>
+
+			</div>
+
 		</div>
 		
 	</div>
@@ -94,7 +99,7 @@ add_shortcode( 'bedev_show_guillotine' , 'bedev_show_guillotine' );
 *
 * Social share button generator
 *
-* This function generates HTML markup for social share buttons as requested
+* This function generates HTML markup for social share buttons as requested. Called from the ajax handlers file
 *
 * @since 0.0.1
 *
@@ -154,30 +159,36 @@ function bedev_generate_social_share_html( $attachment_id = null , $social_site 
 	
 	//get the unique image ref
 	$image_reference = get_post_meta( $attachment_id , 'share-identifier' , true );
+			
+		ob_start();
+
+			?><div id="bedev-available-actions"><?php
 	
-	switch( $social_site ) {
-		
-		case 'facebook':
-			
-			ob_start();
-			
-				?>
+			switch( $social_site ) {
+					
+				case 'twitter':
+					?>
+						<script>bedev_generate_twitter_share(<?php echo $image_reference; ?>)</script>
+					<?php
+					break;
+					
+				case 'instagram':
+					?>
+						<script>bedev_generate_instagram_share(<?php echo $image_reference; ?>)</script>
+					<?php
+					break;
+					
+				default:
+					?>
+						<input type="submit" id='bedev-imagick-<?php echo $social_site; ?>-share' class="bedev-imagick-share btn btn-danger" value="Share on <?php echo $social_site; ?>" onClick="bedev_generate_<?php echo $social_site; ?>_share(<?php echo $image_reference; ?>)">
+					<?php
+					break;
+					
+			}
+			?></div><?php
 
-				<div id="bedev-available-actions" style="clear:both;padding:10px;">
-					<input type="submit" id='bedev-imagick-facebook-share' class="bedev-imagick-share btn btn-danger" value="Share on Facebook" onClick="bedev_generate_fb_share(<?php echo $image_reference; ?>)">
-				</div>	
-
-				<?php
-			
-			$html = ob_get_contents();
-			if( $html ) ob_end_clean();
-			return $html;
-			
-		break;
-			
-		default:
-		return false;
-			
-	}
+		$html = ob_get_contents();
+		if( $html ) ob_end_clean();
+		return $html;
 	
 }

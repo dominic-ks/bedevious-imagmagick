@@ -5,7 +5,7 @@ jQuery( document ).ready( function() {
   jQuery.getScript( '//connect.facebook.net/en_US/sdk.js' , function() {
     
     FB.init({
-      appId: facebook.appID,
+      appId: ajax.facebook.app_id,
       version: 'v2.5'
     });
     
@@ -13,7 +13,7 @@ jQuery( document ).ready( function() {
   
 });
   
-function bedev_generate_fb_share( image_id ) {
+function bedev_generate_facebook_share( image_id ) {
 
   FB.ui({
     method: 'share',
