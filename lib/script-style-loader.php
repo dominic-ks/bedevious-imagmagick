@@ -4,11 +4,20 @@
 *
 * Include all required scripts and styles
 *
+* @todo get the name of the plugin folder dynamically
+*
 * @since 0.0.1
 *
 **/
 
 function bedev_include_files() {
+	
+	global $post;
+	
+	if( ! has_shortcode( the_content() , 'bedev_show_guillotine' ) ) {
+		return;
+	}
+	
 	wp_enqueue_style( 'guillotine-css' , plugins_url() . '/bedev-imagemagick/apps/guillotine/css/jquery.guillotine.css' );
 	wp_enqueue_style( 'bedev-imagemagick-css' , plugins_url() . '/bedev-imagemagick/inc/css/bedev-imagemagick.css' );
 	wp_enqueue_style( 'bedev-font-awesome' , 'https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css' );
