@@ -14,7 +14,7 @@ function bedev_include_files() {
 	
 	global $post;
 	
-	if( ! has_shortcode( the_content() , 'bedev_show_guillotine' ) ) {
+	if( ! has_shortcode( get_the_content() , 'bedev_show_guillotine' ) ) {
 		return;
 	}
 	
